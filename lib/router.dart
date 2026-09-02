@@ -9,31 +9,22 @@ import 'providers/backend_product_provider.dart';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'graphql/client.dart';
-// ============================================================
-// ROUTER
-// ============================================================
 
 final router = GoRouter(
   routes: [
-    // ----------------------------------------------------------
     // Ruta 1: Inventario
-    // ----------------------------------------------------------
     GoRoute(
       path: '/',
       builder: (context, state) => const InventoryPage(),
     ),
 
-    // ----------------------------------------------------------
     // Ruta 2: Nuevo producto
-    // ----------------------------------------------------------
     GoRoute(
       path: '/products/new',
       builder: (context, state) => const NewProductPage(),
     ),
 
-    // ----------------------------------------------------------
     // Ruta 3: Editar producto
-    // ----------------------------------------------------------
     GoRoute(
       path: '/products/:id',
       builder: (context, state) {
@@ -45,9 +36,6 @@ final router = GoRouter(
   ],
 );
 
-// ============================================================
-// INVENTORY PAGE
-// ============================================================
 
 class InventoryPage extends ConsumerWidget {
   const InventoryPage({super.key});
@@ -64,9 +52,6 @@ class InventoryPage extends ConsumerWidget {
 
       body: Column(
         children: [
-          // ======================================================
-          // ESTADO DEL BACKEND
-          // ======================================================
 
           backendProductsAsync.when(
             loading: () => const LinearProgressIndicator(),
@@ -75,7 +60,7 @@ class InventoryPage extends ConsumerWidget {
               padding: const EdgeInsets.all(8),
               child: Text(
                 'Backend: $error',
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -92,9 +77,6 @@ class InventoryPage extends ConsumerWidget {
             ),
           ),
 
-          // ======================================================
-          // LISTA LOCAL DE PRODUCTOS
-          // ======================================================
 
           Expanded(
             child: productsAsync.when(
@@ -127,9 +109,6 @@ class InventoryPage extends ConsumerWidget {
                   itemBuilder: (context, index) {
                     final product = products[index];
 
-                    // ==================================================
-                    // SWIPE ACTIONS
-                    // ==================================================
 
                     return Slidable(
                       key: ValueKey(product.id),
@@ -139,9 +118,6 @@ class InventoryPage extends ConsumerWidget {
                         extentRatio: 0.50,
 
                         children: [
-                          // ==================================================
-                          // BOTÓN EDITAR
-                          // ==================================================
 
                           SlidableAction(
                             onPressed: (context) {
@@ -155,9 +131,6 @@ class InventoryPage extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(16),
                           ),
 
-                          // ==================================================
-                          // BOTÓN ELIMINAR
-                          // ==================================================
 
                           SlidableAction(
                             onPressed: (context) {
@@ -176,9 +149,6 @@ class InventoryPage extends ConsumerWidget {
                         ],
                       ),
 
-                      // ==================================================
-                      // TARJETA DEL PRODUCTO
-                      // ==================================================
 
                       child: Card(
                         child: ListTile(
@@ -208,9 +178,6 @@ class InventoryPage extends ConsumerWidget {
         ],
       ),
 
-      // =========================================================
-      // BOTÓN NUEVO PRODUCTO
-      // =========================================================
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -221,9 +188,6 @@ class InventoryPage extends ConsumerWidget {
     );
   }
 
-  // ============================================================
-  // DIÁLOGO DE ELIMINACIÓN
-  // ============================================================
 
   void _showDeleteDialog(
     BuildContext context,
@@ -301,9 +265,6 @@ class InventoryPage extends ConsumerWidget {
   }
 }
 
-// ============================================================
-// NEW PRODUCT PAGE
-// ============================================================
 
 class NewProductPage extends ConsumerStatefulWidget {
   const NewProductPage({super.key});
@@ -333,18 +294,16 @@ class _NewProductPageState extends ConsumerState<NewProductPage> {
     super.dispose();
   }
 
-  // ============================================================
   // GUARDAR NUEVO PRODUCTO
-  // ============================================================
 
   Future<void> _saveProduct() async {
-  if (!_formKey.currentState!.validate()) {
-    return;
-  }
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
 
-  setState(() {
-    _isSaving = true;
-  });
+    setState(() {
+      _isSaving = true;
+    });
 
   try {
     const mutation = r'''
@@ -433,9 +392,6 @@ class _NewProductPageState extends ConsumerState<NewProductPage> {
           padding: const EdgeInsets.all(16),
 
           children: [
-            // ====================================================
-            // NOMBRE
-            // ====================================================
 
             TextFormField(
               controller: _nameController,
@@ -457,9 +413,6 @@ class _NewProductPageState extends ConsumerState<NewProductPage> {
 
             const SizedBox(height: 16),
 
-            // ====================================================
-            // SKU
-            // ====================================================
 
             TextFormField(
               controller: _skuController,
@@ -481,9 +434,6 @@ class _NewProductPageState extends ConsumerState<NewProductPage> {
 
             const SizedBox(height: 16),
 
-            // ====================================================
-            // STOCK
-            // ====================================================
 
             TextFormField(
               controller: _stockController,
@@ -507,9 +457,6 @@ class _NewProductPageState extends ConsumerState<NewProductPage> {
 
             const SizedBox(height: 16),
 
-            // ====================================================
-            // PRECIO
-            // ====================================================
 
             TextFormField(
               controller: _priceController,
@@ -536,9 +483,6 @@ class _NewProductPageState extends ConsumerState<NewProductPage> {
 
             const SizedBox(height: 24),
 
-            // ====================================================
-            // BOTÓN GUARDAR
-            // ====================================================
 
             FilledButton.icon(
               onPressed:
@@ -570,9 +514,6 @@ class _NewProductPageState extends ConsumerState<NewProductPage> {
   }
 }
 
-// ============================================================
-// PRODUCT DETAIL / EDIT PAGE
-// ============================================================
 
 class ProductDetailPage extends ConsumerStatefulWidget {
   final String productId;
@@ -599,9 +540,7 @@ class _ProductDetailPageState
   bool _loading = true;
   bool _saving = false;
 
-  // ============================================================
   // CARGAR PRODUCTO
-  // ============================================================
 
   @override
   void initState() {
@@ -651,9 +590,7 @@ class _ProductDetailPageState
     });
   }
 
-  // ============================================================
   // ACTUALIZAR PRODUCTO
-  // ============================================================
 
   Future<void> _updateProduct() async {
   if (!_formKey.currentState!.validate()) {
@@ -738,9 +675,6 @@ class _ProductDetailPageState
   }
   }
 
-  // ============================================================
-  // BUILD EDITAR
-  // ============================================================
 
   @override
   Widget build(BuildContext context) {
@@ -766,9 +700,6 @@ class _ProductDetailPageState
           padding: const EdgeInsets.all(16),
 
           children: [
-            // ====================================================
-            // NOMBRE
-            // ====================================================
 
             TextFormField(
               controller: _nameController,
@@ -790,9 +721,6 @@ class _ProductDetailPageState
 
             const SizedBox(height: 16),
 
-            // ====================================================
-            // SKU
-            // ====================================================
 
             TextFormField(
               controller: _skuController,
@@ -814,9 +742,6 @@ class _ProductDetailPageState
 
             const SizedBox(height: 16),
 
-            // ====================================================
-            // STOCK
-            // ====================================================
 
             TextFormField(
               controller: _stockController,
@@ -840,9 +765,6 @@ class _ProductDetailPageState
 
             const SizedBox(height: 16),
 
-            // ====================================================
-            // PRECIO
-            // ====================================================
 
             TextFormField(
               controller: _priceController,
@@ -869,9 +791,6 @@ class _ProductDetailPageState
 
             const SizedBox(height: 24),
 
-            // ====================================================
-            // GUARDAR CAMBIOS
-            // ====================================================
 
             FilledButton.icon(
               onPressed:
